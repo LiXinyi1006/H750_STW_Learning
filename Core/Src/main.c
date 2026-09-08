@@ -116,7 +116,7 @@ int main(void)
                       sizeof(uart1_test_message) - 1U,
                       HAL_MAX_DELAY);
 
-    HAL_Delay(500);
+    HAL_Delay(50);
   }
   /* USER CODE END 3 */
 }
