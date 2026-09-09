@@ -44,9 +44,8 @@
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
+static uint8_t uart1_rx_byte;
 
-/* Text sent through USART1 for the first serial-port test. */
-static const uint8_t uart1_test_message[] = "H750 USART1 OK\r\n";
 
 /* USER CODE END PV */
 
@@ -108,15 +107,23 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+    /* USER CODE BEGIN 3 */
 
-    /* Blocking transmit is simple and suitable for the first UART test. */
+/* 等待 USART1 接收一个字节 */
+if (HAL_UART_Receive(&huart1,
+                     &uart1_rx_byte,
+                     1,
+                     HAL_MAX_DELAY) == HAL_OK)
+{
+    /* 将收到的字节原样发送回电脑 */
     HAL_UART_Transmit(&huart1,
-                      (const uint8_t *)uart1_test_message,
-                      sizeof(uart1_test_message) - 1U,
+                      &uart1_rx_byte,
+                      1,
                       HAL_MAX_DELAY);
 
-    HAL_Delay(50);
+    /* 每成功收到一个字节，LED 翻转一次 */
+    HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+}
   }
   /* USER CODE END 3 */
 }
